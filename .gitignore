@@ -1,3 +1,6 @@
 # Virtual Environment
 rag_venv/
 pyvenv.cfg
+
+# API Key
+.env
