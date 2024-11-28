@@ -14,7 +14,8 @@ from src.utilities import (
 from src.rag_techniques import (
     naive_rag,
     expansion_answer_rag,
-    expansion_queries_rag
+    expansion_queries_rag,
+    reranking_rag
 )
 
 def main():
@@ -43,10 +44,13 @@ def main():
     res_naive = naive_rag(collection, original_query, client, generate_final_answer)
 
     # Performe expansion answer technique
-    res_exp_ans = expansion_answer_rag(collection, original_query, client, generate_hallucinated_answer, generate_final_answer)
+    res_exp_ans, hypothetical_answer = expansion_answer_rag(collection, original_query, client, generate_hallucinated_answer, generate_final_answer)
 
     # Performe expansion queries technique
-    res_exp_que = expansion_queries_rag(collection, original_query, client, generate_related_queries, generate_final_answer)
+    res_exp_que, related_queries = expansion_queries_rag(collection, original_query, client, generate_related_queries, generate_final_answer)
+
+    # Performe reranking & expansion queries technique
+    res_rerank = reranking_rag(collection, original_query, related_queries, client, generate_final_answer)
 
     print("Final Answer of Navive RAG:")
     print(res_naive)
@@ -56,6 +60,9 @@ def main():
     print("=================================")
     print("Final Answer of Expansion Queries:")
     print(res_exp_que)
+    print("=================================")
+    print("Final Answer of Reranking:")
+    print(res_rerank)
 
 
 if __name__ == "__main__":
