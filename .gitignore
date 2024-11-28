@@ -4,3 +4,5 @@ pyvenv.cfg
 
 # API Key
 .env
+__pycache__
+test.py
