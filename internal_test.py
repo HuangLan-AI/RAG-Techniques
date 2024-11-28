@@ -121,6 +121,7 @@ original_query = "How the goldfish die?"
 hypothetical_answer = augment_query_generated(original_query)
 joint_query = f"{original_query} {hypothetical_answer}"
 print(f"For Expansion Answer, the joint query is {joint_query}")
+print("===================")
 
 # Pass both original query and hallucinated answer to chromabd
 results = chroma_collection.query(
@@ -164,6 +165,8 @@ original_query = (
     "How the goldfish die?"
 )
 aug_queries = generate_multi_query(original_query)
+print(f"For Expansion Queries, the augmented query is {aug_queries}")
+print("===================")
 
 # Concatenate the original query with the augmented queries
 joint_query = [
