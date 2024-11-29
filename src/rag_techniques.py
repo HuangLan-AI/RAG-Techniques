@@ -112,7 +112,7 @@ def reranking_rag(collection, query, related_queries, client, generate_final_ans
     # Generate final answer
     response = generate_final_answer(query, client, context)
 
-    return response
+    return response, top_documents
 
 
 def deduplicate_documents(documents_list):

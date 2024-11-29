@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
 from src.utilities import (
@@ -50,19 +51,43 @@ def main():
     res_exp_que, related_queries = expansion_queries_rag(collection, original_query, client, generate_related_queries, generate_final_answer)
 
     # Performe reranking & expansion queries technique
-    res_rerank = reranking_rag(collection, original_query, related_queries, client, generate_final_answer)
+    res_rerank, top_documents = reranking_rag(collection, original_query, related_queries, client, generate_final_answer)
 
-    print("Final Answer of Navive RAG:")
-    print(res_naive)
-    print("=================================")
-    print("Final Answer of Expansion Answer:")
-    print(res_exp_ans)
-    print("=================================")
-    print("Final Answer of Expansion Queries:")
-    print(res_exp_que)
-    print("=================================")
-    print("Final Answer of Reranking:")
-    print(res_rerank)
+    # Generate timestamp for the file name
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    results_file_path = os.path.join("results", f"result_{timestamp}.txt")
+
+    # Write results to the text file
+    with open(results_file_path, "w", encoding="utf-8") as file:
+        file.write("Original Query:\n")
+        file.write(original_query)
+        file.write("\n\n")
+
+        file.write("Final Answer of Naive RAG:\n")
+        file.write("\n".join(res_naive))
+        file.write("\n\n")
+
+        file.write("Final Answer of Expansion Answer:\n")
+        file.write("\n".join(res_exp_ans))
+        file.write("\n\n")
+
+        file.write("Final Answer of Expansion Queries:\n")
+        file.write("\n".join(res_exp_que))
+        file.write("\n\n")
+
+        file.write("Hypothetical Answer:\n")
+        file.write("".join(hypothetical_answer))
+        file.write("\n\n")
+
+        file.write("Related Queries:\n")
+        file.write("\n".join(related_queries))
+        file.write("\n\n")
+
+        file.write("Top Documents (Reranked):\n")
+        file.write("\n".join(top_documents))
+
+    # Print a success message
+    print(f"Results have been saved to {results_file_path}")
 
 
 if __name__ == "__main__":
