@@ -25,21 +25,35 @@ def main():
     my_openai_key = os.getenv("OPENAI_API_KEY")
     client = OpenAI(api_key=my_openai_key)
 
+    # Fetch configuration values from .env
+    pdf_directory = os.getenv("PDF_DIRECTORY")
+    collection_name = os.getenv("COLLECTION_NAME")
+    original_query = os.getenv("ORIGINAL_QUERY")
+
     # Read texts from PDF file
-    file_name = "The Goldfish Story.pdf"
-    pdf_texts = load_pdf_texts(file_name)
+    # pdf_directory = "data/goldfish"
+    # file_name = "The Goldfish Story.pdf"
+    pdf_files = [file for file in os.listdir(pdf_directory) if file.endswith(".pdf")]
+
+    # Read and combine texts from all PDFs
+    # pdf_files = [file for file in os.listdir(pdf_directory) if file.endswith(".pdf")]
+    # pdf_texts = load_pdf_texts(file_name, pdf_directory)
+    pdf_texts = []
+    for file_name in pdf_files:
+        pdf_texts = load_pdf_texts(file_name, directory=pdf_directory)
+        pdf_texts.extend(pdf_texts)
 
     # Split texts into chunks
     character_chunks = split_text_character_based(pdf_texts)
     token_chunks = split_text_token_based(character_chunks)
 
     # Create Embeddings and Store in Chromadb
-    collection_name = "goldfish_collection"
+    # collection_name = "goldfish_collection"
     collection = create_chroma_collection(collection_name=collection_name)
     add_documents_to_collection(collection, token_chunks)
 
     # Set the original query
-    original_query = "How the goldfish die?"
+    # original_query = "How the goldfish die?"
 
     # Performe naive RAG
     res_naive = naive_rag(collection, original_query, client, generate_final_answer)
@@ -73,6 +87,10 @@ def main():
 
         file.write("Final Answer of Expansion Queries:\n")
         file.write("\n".join(res_exp_que))
+        file.write("\n\n")
+
+        file.write("Final Answer of Reranking:\n")
+        file.write("\n".join(res_rerank))
         file.write("\n\n")
 
         file.write("Hypothetical Answer:\n")
