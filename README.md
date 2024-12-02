@@ -49,7 +49,4 @@ A Python-based project that implements Retrieval-Augmented Generation (RAG) tech
     ```
 3. Results will be saved in the `results/` directory with a timestamped file.
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
 
